@@ -10,9 +10,11 @@ repository itself holds only this description.
 | `moonrivermasters-db` | `moonrivermasters.ocgdb.db3` | game database, OCGDB (SQLite) | 31.3 MB | 14.8 MB |
 | `moonrivermasters-mrbk` | `moonrivermasters.mrbk` | opening book, MoonRiver `.mrbk` | 880 KB | 415 KB |
 | `moonrivermasters-obs` | `moonrivermasters.obs.db3` | opening book, OOBS (SQLite, with win/draw/loss) | 9.8 MB | 1.1 MB |
+| `felicity-xq-1-0` | `felicity-xq-1-0.zip` | Felicity endgame tablebases, one attacker (§4) | 55.9 MB | (zip) |
 
-All files are compressed with 7-Zip (LZMA2). Unpack them with 7-Zip, `7z x <file>.7z`, or the
-Windows 11 Explorer.
+The database and the books are compressed with 7-Zip (LZMA2). Unpack them with 7-Zip, `7z x <file>.7z`, or the
+Windows 11 Explorer. **MoonRiver** downloads, unpacks and adds all four from *Tools › Download*
+(Game databases, Opening books, Felicity).
 
 ---
 
@@ -154,7 +156,37 @@ oobs-xq -export -in moonrivermasters.obs.db3 -out mm-start.epd -plytake 12 -plyd
 | `moonrivermasters.ocgdb.db3.7z` | `38c39bcec6c553eca4cade5a6f4445c54e1d244263815f780c8c50c7fbaa138d` |
 | `moonrivermasters.mrbk.7z` | `9c35e4fb585fcf0dd24957f3a25211db4c15355912a40a6c85958939fccb5302` |
 | `moonrivermasters.obs.db3.7z` | `f0d892d6f2a20f734961dfe92c62e7c8563e053fc21925b93451bee2ca7b3206` |
+| `felicity-xq-1-0.zip` | `4ceae3d0da662e8eed477a23742b297ff352218fa2a8a412d46e6673b4db0a0a` |
 
-## 4. Licence
+## 4. Felicity endgame tablebases, one attacker: `felicity-xq-1-0.zip`
+
+Felicity tablebases for xiangqi: **every endgame with one attacker** (one Rook, Cannon, Horse or Pawn) on one
+side, with any advisors and elephants on both sides: **324 endgames**, distance to mate (DTM), with the
+perpetual-check and perpetual-chase rules. 55,894,303 bytes of tables, one zip of 55.9 MB.
+
+- **One side to move kept**: only the Red-to-move (White-to-move) file of each endgame is in the set
+  (`NAME.w.fexq`). The prober answers a Black-to-move position exactly with a one-ply search over its Red-to-move
+  children, so the set answers every probe the full set of both sides answers.
+- **Smaller files**: the order of the pieces in each file's index was chosen per endgame (the one that
+  compresses best, often the defending king group first), with LZMA settings tuned for these tables. With the
+  one side, the set is 0.14 of the full set of both sides (412 MB).
+- The zip unpacks into `felicity-xq/1-0/`; point the program at `felicity-xq` (the prober searches the
+  sub-folders). It is **stored**, not compressed: the files are LZMA blocks already. The set needs no other
+  table (capturing the only attacker leaves a draw).
+- **MoonRiver:** *Tools › Download › Felicity* downloads, unpacks and adds it (Settings › Books & EGTBs) in one
+  click.
+- Format: signature 556683, LZMA, 4 KB blocks, piece order in the header. Read by the Felicity prober of
+  2026-10-19 or later (the one in MoonRiver and Banksia); **older probers refuse these files**, including the
+  one of the public `nguyenpham/FelicityEgtb`.
+- Each file carries its own checksum in the header (bytes 112-127), so it can be checked on its own;
+  `SHA256SUMS.txt` lists the zip and every file inside it.
+
+Checked before publishing: every legal position of every file was read back through the prober and equals
+the full set (1,374,503,436 positions, 0 different); probes of both sides to move and every move's score were
+compared with the full set (§4 of FelicityEGTBBK `docs/XqCutRepack.md`), 0 mismatches.
+
+Made with `tools/felicity/makezip.py` of this repository.
+
+## 5. Licence
 
 The data is free to use. The repository is under the MIT licence ([LICENSE](LICENSE)).
